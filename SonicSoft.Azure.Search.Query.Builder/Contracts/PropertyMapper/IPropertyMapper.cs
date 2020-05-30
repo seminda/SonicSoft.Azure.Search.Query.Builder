@@ -2,6 +2,6 @@
 {
     public interface IPropertyMapper
     {
-        SearchProperty GetPropertyMapper(string parentProperty, string propertyName);
+        SearchPropertyMap GetSearchPropertyMap(string parentProperty, string propertyName);
     }
 }

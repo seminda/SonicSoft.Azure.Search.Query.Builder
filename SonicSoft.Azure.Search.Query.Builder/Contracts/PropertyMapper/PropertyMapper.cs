@@ -7,14 +7,14 @@ namespace SonicSoft.Azure.Search.Query.Builder.Contracts.PropertyMapper
 {
     public class PropertyMapper:IPropertyMapper
     {
-        private List<SearchProperty> _propertyMaps;
+        private List<SearchPropertyMap> _propertyMaps;
 
-        public PropertyMapper(List<SearchProperty> properties)
+        public PropertyMapper(List<SearchPropertyMap> properties)
         {
             _propertyMaps = properties ??
                             throw new InvalidDataContractException("List of azure search property mapping required");
         }
-        public SearchProperty GetPropertyMapper(string parentProperty, string propertyName)
+        public SearchPropertyMap GetSearchPropertyMap(string parentProperty, string propertyName)
         {
             return _propertyMaps.SingleOrDefault(s =>
                 string.Equals(s.ParentPropertyName, parentProperty, StringComparison.CurrentCultureIgnoreCase) &&
