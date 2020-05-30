@@ -25,9 +25,9 @@ Rooms/any(x: x/Type ne 'Standard Room' and x/BaseRate ge 100 and search.in(x/Tag
 ((Rooms/any(x: x/Type ne 'Standard Room' and x/BaseRate ge 100 and search.in(x/Tags, 'jacuzzi tub|bathroom shower','|')) and search.in(Tags, 'view|laundry service', '|')) or Address/Country eq 'USA')
 ```
 ## Installation
-
-install the package
-
+```bash
+dotnet add package SonicSoft.Azure.Search.Query.Builder --version 1.0.0
+```
 ## Usage
 
 #### Step 1
@@ -181,4 +181,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## License
-[SonicSoft License](https://github.com/seminda/SonicSoft.Azure.Search.Query.Builder/blob/master/LICENSE)
+[MIT License](https://github.com/seminda/SonicSoft.Azure.Search.Query.Builder/blob/master/LICENSE)
