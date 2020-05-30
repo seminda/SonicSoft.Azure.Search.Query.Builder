@@ -2,7 +2,12 @@
 {
    public class SearchConfiguration: ISearchConfiguration
     {
-        public string DateFormat { get; set; }
-        public string Delimiter { get; set; }
+        public SearchConfiguration(string dateFormat,string delimiter)
+        {
+            DateFormat = dateFormat;
+            Delimiter = delimiter;
+        }
+        public string DateFormat { get;  }
+        public string Delimiter { get;  }
     }
 }

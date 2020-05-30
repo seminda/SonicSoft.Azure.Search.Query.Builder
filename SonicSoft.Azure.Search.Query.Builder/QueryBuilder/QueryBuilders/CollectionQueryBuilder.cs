@@ -23,14 +23,16 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 
         public override bool IsMatch(SearchQueryParameter searchQueryParameter)
         {
-            var searchProperty = _filterMapper.GetSearchPropertyMap(searchQueryParameter.Parent, searchQueryParameter.Name);
+            var searchProperty =
+                _filterMapper.GetSearchPropertyMap(searchQueryParameter.Parent, searchQueryParameter.Name);
 
             return searchProperty.IsArray;
         }
 
         public override string BuildQuery(SearchQueryParameter searchQueryParameter)
         {
-            var searchProperty = _filterMapper.GetSearchPropertyMap(searchQueryParameter.Parent, searchQueryParameter.Name);
+            var searchProperty =
+                _filterMapper.GetSearchPropertyMap(searchQueryParameter.Parent, searchQueryParameter.Name);
 
             if ((searchQueryParameter.IsNullCheck || searchQueryParameter.SubQueryParameters == null ||
                  searchQueryParameter.SubQueryParameters.Count == 0) &&
@@ -42,29 +44,30 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
             return BuildCollectionQuery(searchQueryParameter, searchProperty);
         }
 
-        private string EmptyFieldQuery(SearchQueryParameter searchFilterInfo, SearchPropertyMap searchProperty, bool isNullCheck)
+        private string EmptyFieldQuery(SearchQueryParameter searchFilterInfo, SearchPropertyMap searchProperty,
+            bool isNullCheck)
         {
-            var anyQuery = $"{searchProperty.AzureSearchPropertyMaps[0]}/{searchFilterInfo.ODataOperator.ToString().ToLower()}()";
+            var anyQuery =
+                $"{searchProperty.AzureSearchPropertyMap}/{searchFilterInfo.ODataOperator.ToString().ToLower()}()";
 
             return isNullCheck ? $"not {anyQuery}" : anyQuery;
         }
 
         private string BuildCollectionQuery(SearchQueryParameter searchQueryParameter, SearchPropertyMap searchProperty)
         {
-            var itemName = "x";
             var queryList = new List<string>();
             if (searchQueryParameter.ODataOperator == ODataOperators.SearchIn)
             {
-                throw new NotImplementedException();
+              return  GetSearchInFilter(searchProperty, searchQueryParameter.Value);
             }
 
-            foreach (var azureSearchPropertyMap in searchProperty.AzureSearchPropertyMaps)
-            {
-                StringBuilder builder = new StringBuilder($"{azureSearchPropertyMap}/{searchQueryParameter.ODataOperator.ToString().ToLower()}({itemName}: ");
-                builder.Append(BuildSubQuery(searchQueryParameter));
-                builder.Append(")");
-                queryList.Add(builder.ToString());
-            }
+            StringBuilder builder =
+                new StringBuilder(
+                    $"{searchProperty.AzureSearchPropertyMap}/{searchQueryParameter.ODataOperator.ToString().ToLower()}({_itemName}: ");
+            builder.Append(BuildSubQuery(searchQueryParameter));
+            builder.Append(")");
+
+            queryList.Add(builder.ToString());
 
             return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
         }
@@ -85,7 +88,8 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
             return BuildCustomQuery(searchQueryParameter.SubQueryParameterQueryOperators, subQueryList.ToArray());
         }
 
-        private string GetAdditionalFilter(SearchPropertyMap propertyMap, SearchSubQueryParameter additionalSearchFilterInfo)
+        private string GetAdditionalFilter(SearchPropertyMap propertyMap,
+            SearchSubQueryParameter additionalSearchFilterInfo)
         {
             var queryList = new List<string>();
             if (additionalSearchFilterInfo.ODataOperator == ODataOperators.SearchIn)
@@ -93,10 +97,8 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
                 if (string.IsNullOrWhiteSpace(additionalSearchFilterInfo.Value.ToString()))
                     return string.Empty;
 
-                foreach (var map in propertyMap.AzureSearchPropertyMaps)
-                {
-                    queryList.Add($"search.in({_itemName}/{map}, '{additionalSearchFilterInfo.Value}',{_searchConfiguration.Delimiter})");
-                }
+                queryList.Add(
+                    $"search.in({_itemName}/{propertyMap.AzureSearchPropertyMap}, '{additionalSearchFilterInfo.Value}','{_searchConfiguration.Delimiter}')");
             }
             else
             {
@@ -113,22 +115,22 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
                 }
                 else
                 {
-                    searchValue = isString ? $"'{additionalSearchFilterInfo.Value}'" : $"{additionalSearchFilterInfo.Value.ToString().ToLower()}";
+                    searchValue = isString
+                        ? $"'{additionalSearchFilterInfo.Value}'"
+                        : $"{additionalSearchFilterInfo.Value.ToString().ToLower()}";
                     if (additionalSearchFilterInfo.IsNullCheck)
                     {
                         isAdditionalNullCheckRequired = true;
                     }
                 }
 
-                foreach (var map in propertyMap.AzureSearchPropertyMaps)
+                queryList.Add(
+                    $"{_itemName}/{propertyMap.AzureSearchPropertyMap} {additionalSearchFilterInfo.ODataOperator.ToString().ToLower()} {searchValue}");
+
+                if (isAdditionalNullCheckRequired)
                 {
-                    queryList.Add($"{_itemName}/{map} {additionalSearchFilterInfo.ODataOperator.ToString().ToLower()} {searchValue}");
-
-                    if (isAdditionalNullCheckRequired)
-                    {
-                        queryList.Add($"{_itemName}/{map} {additionalSearchFilterInfo.ODataOperator.ToString().ToLower()} null");
-                    }
-
+                    queryList.Add(
+                        $"{_itemName}/{propertyMap.AzureSearchPropertyMap} {additionalSearchFilterInfo.ODataOperator.ToString().ToLower()} null");
                 }
             }
 
@@ -137,9 +139,33 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 
         protected string BuildCustomQuery(QueryOperators? queryOperator, params string[] queries)
         {
-            var value = $"{string.Join($" {queryOperator?.ToString().ToLower()} ", queries.Where(s => !string.IsNullOrWhiteSpace(s)))}";
+            var value =
+                $"{string.Join($" {queryOperator?.ToString().ToLower()} ", queries.Where(s => !string.IsNullOrWhiteSpace(s)))}";
 
             return value;
+        }
+
+        private string GetSearchInFilter(SearchPropertyMap propertyMap, object values)
+        {
+            if (string.IsNullOrWhiteSpace(values.ToString()))
+                return string.Empty;
+
+            var azureSearchPropertyMap = propertyMap.AzureSearchPropertyMap;
+            if (propertyMap.PropertyName != propertyMap.ParentPropertyName)
+            {
+                var parent = _filterMapper.GetSearchPropertyMap(propertyMap.ParentPropertyName, propertyMap.ParentPropertyName);
+                if (parent != null)
+                {
+                    azureSearchPropertyMap = $"{parent.AzureSearchPropertyMap}/{propertyMap.AzureSearchPropertyMap}";
+                }
+            }
+
+            var queryList = new List<string>()
+            {
+                $"search.in({azureSearchPropertyMap}, '{values}', '{_searchConfiguration.Delimiter}')"
+            };
+
+            return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
         }
     }
 }

@@ -7,6 +7,6 @@ namespace SonicSoft.Azure.Search.Query.Builder.Contracts.PropertyMapper
         public string ParentPropertyName { get; set; }
         public string PropertyName { get; set; }
         public bool IsArray { get; set; }
-        public List<string> AzureSearchPropertyMaps { get; set; }
+        public string AzureSearchPropertyMap { get; set; }
     }
 }

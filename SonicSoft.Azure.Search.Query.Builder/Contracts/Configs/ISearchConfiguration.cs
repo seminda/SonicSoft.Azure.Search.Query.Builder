@@ -2,7 +2,7 @@
 {
     public interface ISearchConfiguration
     {
-         string DateFormat { get; set; }
-         string Delimiter { get; set; }
+         string DateFormat { get; }
+         string Delimiter { get;}
     }
 }
