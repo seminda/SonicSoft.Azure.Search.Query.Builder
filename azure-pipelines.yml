@@ -1,175 +1,38 @@
-# ASP.NET Core
-# Build, Test and Publish ASP.NET Core web applications targeting .NET Core.
-# Add steps that run tests, create a NuGet package (*optional), deploy, and more:
-# Regarding .Net Core operations
-# https://docs.microsoft.com/vsts/pipelines/languages/dotnet-core
-# Regarding Nuget packaging operations
-# https://docs.microsoft.com/vsts/pipelines/tasks/package/nuget
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-# List of [Predefined build variables](https://docs.microsoft.com/vsts/pipelines/build/variables)
-name: $(BuildID)
+trigger:
+- master
 
-# Please provide variables through pipeline Variables screen
+pool:
+  vmImage: 'windows-latest'
+
 variables:
-  Parameters.outputDir: "$(Build.SourcesDirectory)/output"
-  Parameters.publishDir: "$(Build.ArtifactStagingDirectory)/publish"
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
-phases:
-  - phase: PrepareBuildEnvironmentNBuildTestPublishProject
-    displayName: Prepare the Build Environment & then Build, Test and Publish all components (BTP)
+steps:
+- task: NuGetToolInstaller@1
 
-    ################################################################################
-    ## Section: PrepareBuildEnvironment ##
-    ################################################################################
-    queue:
-      name: Hosted VS2017
-      demands:
-        - msbuild
-        - visualstudio
-        - vstest
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
 
-    # pool:
-    #   vmImage: 'VS2017-Win2016'
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
-    steps:
-      - task: NuGetToolInstaller@0
-        displayName: Use NuGet 4.4.1
-        inputs:
-          versionSpec: 4.4.1
-
-      # Not required unless running on a custom build environment or the default Agent Pool doesn't support it.
-      # *It adds significant build overhead
-      # - task: DotNetCoreInstaller@0
-      #   inputs:
-      #     version: "$(DotNetCoreVersion)" # change this if you have a different version
-      ###################### PrepareBuildEnvironment Ends ############################
-
-      ### Don't uncomment this block unless parallel execution is required #########
-      ################################################################################
-      # # Parallel Phase execution is not recommended for single project
-      # # Multiple Projects can be set up for Parallel Execution
-      # # - phase: BuildTestPublishProject
-      # #   displayName: Build, _Test_ and _Publish_ all components (BTP)
-
-      # #   steps:
-      ######################## Don't uncomment #######################################
-
-      ################################################################################
-      ## Section: Build, _Test_ and _Publish_ all components (BTP) ##
-      ################################################################################
-      # Option BTP.1: Create a Powershell script to run all commands from a single script
-      #               Useful for building & testing multiple projects synchronously
-      ################################################################################
-      # - powershell: build/buildApi.ps1 -Test -Swagger -Publish -Configuration $(BuildConfiguration) -BuildNumber $(Build.BuildId) -Solution $(Parameters.solution)
-      #   displayName: Build API
-      ######################## BTP.1 Ends ############################################
-
-      ################################################################################
-      # Option BTP.2: Run scripts one by one here
-      ################################################################################
-      ## Section: Build ##
-
-      # Doc: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?tabs=netcore2x
-      - script: dotnet restore $(Parameters.solution)
-        displayName: "dotnet restore $(Parameters.solution)"
-
-      # Doc: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build?tabs=netcore2x
-      - script: dotnet build --no-restore --configuration $(BuildConfiguration) --version-suffix $(Build.BuildId) $(Parameters.solution)
-        displayName: "dotnet build -c $(BuildConfiguration) -v $(Build.BuildId) $(Parameters.solution)"
-      ######################## Build Ends ############################################
-
-      ################################################################################
-      # ## Section: Test  ##
-
-      # # Option BTP.Test.1: use dotnet test
-      # # Doc: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test?tabs=netcore21
-      # - script: dotnet test --no-restore --no-build --configuration $(BuildConfiguration) $(Parameters.solution) --logger "trx;LogFileName=Results.trx"
-      #   displayName: 'dotnet test $(Parameters.solution)'
-
-      # # Option BTP.Test.2: use Azure DevOps VSTest configurations
-      # # ignore Enpoint testing for now
-      # # Doc:
-      - task: VSTest@2
-        displayName: Test Assemblies
-        inputs:
-          testAssemblyVer2: |
-            **\$(BuildConfiguration)\**\*.test.dll
+- task: VSTest@2
+  displayName: Test Assemblies
+  inputs:
+    testAssemblyVer2: |
+          **\$(BuildConfiguration)\**\*.test.dll
             !**\obj\**
-          platform: "$(BuildPlatform)"
-          configuration: "$(BuildConfiguration)"
-      ################################################################################
-
-      ################################################################################
-      # ## Section: Publish Test Results (*optional)  ##
-
-      # - task: PublishTestResults@1
-      #   displayName: Publish API Test Results
-      #   inputs:
-      #     testRunner: VSTest
-      #     testResultsFiles: "$(Build.SourcesDirectory)/**/*.Test/TestResults/**.trx"
-      ################################################################################
-
-      ################################################################################
-      # ## Section: Publish ##
-
-      # # Option BTP.Pub.Pkg.1: use dotnet publish to create a single directory containing build output
-      # # Doc: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish?tabs=netcore21
-      - script: dotnet publish --configuration $(BuildConfiguration) --output $(Parameters.outputDir) --version-suffix $(Build.BuildId) --no-restore $(Parameters.project) #not solution:  $(Parameters.solution)
-        displayName: "dotnet publish $(Parameters.solution)"
-
-      # # Option BTP.Pub.Pkg.2: use dotnet pack to create a Nuget package
-      # # Doc: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-pack?tabs=netcore2x
-      # - script: dotnet pack $(Parameters.solution)
-      #   displayName: 'dotnet pack $(Parameters.solution)'
-      ################################################################################
-      ######################## BTP.2 Ends ############################################
-
-      ################################################################################
-      # ## Section: Publish Symbols (*optional) ##
-      # # Doc:
-      # - task: PublishSymbols@2
-      #   displayName: Publish symbols path
-      #   inputs:
-      #     SearchPattern: '**\bin\**\*.pdb'
-      #     PublishSymbols: false
-      #   continueOnError: true
-      ################################################################################
-
-      ################################################################################
-      # ## Section: Create artifacts  ##
-
-      # # Step BTP.Pub.App.1: use Azure DevOps Copy & Publish Artifacts configurations
-
-      # # Doc:
-      # - task: CopyFiles@2
-      #   displayName: Copy built output to Publish folder
-      #   inputs:
-      #     SourceFolder: $(Parameters.outputDir)
-      #     TargetFolder: '$(Parameters.publishDir)'
-
-      # # Zip the output directory and transfer to publish directory
-      - powershell: build/zipFolder.ps1 -SourceDirectory $(Parameters.outputDir) -TargetDirectory $(Parameters.publishDir) -ZipFileName 'app_$(Build.BuildId).zip'
-        displayName: Copy built output to Publish folder as zipped archieve
-
-      # # Step BTP.Pub.App.2: use Azure DevOps Copy & Publish Artifacts configurations
-      # # Doc:
-      - task: PublishBuildArtifacts@1
-        displayName: Publish App Artifact
-        inputs:
-          PathtoPublish: "$(Parameters.publishDir)"
-          ArtifactName: "$(Parameters.ArtifactName)"
-      ################################################################################
-
-      ################################################################################
-      # ## Section: Provide deployment scripts  ##
-
-      # # Doc:
-      - task: PublishBuildArtifacts@1
-        displayName: Publish Deployment Scripts as Artifact
-        inputs:
-          pathToPublish: deploy
-          artifactName: deploy
-          artifactType: container
-      ################################################################################
-  ##################### BuildTestPublish (BTP) Ends ##############################
-  ################################################################################
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
