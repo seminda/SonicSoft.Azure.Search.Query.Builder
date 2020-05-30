@@ -2,12 +2,12 @@
 
 namespace SonicSoft.Azure.Search.Query.Builder.Contracts
 {
-    public class SubQueryParameter
+    public class SearchSubQueryParameter
     {
         public string AdditionalFilterParent { get; set; }
         public string AdditionalFilterName { get; set; }
         public object Value { get; set; }
         public bool IsNullCheck { get; set; }
-        public LogicalOperators LogicalOperator { get; set; }
+        public ODataOperators ODataOperator { get; set; }
     }
 }

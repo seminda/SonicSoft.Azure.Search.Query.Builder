@@ -3,8 +3,9 @@ using SonicSoft.Azure.Search.Query.Builder.Enums;
 
 namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder
 {
-    interface ISearchQueryBuilder
+    public interface ISearchQueryBuilder
     {
-     string BuildQuery(QueryOperators? queryOperator, params QueryParameters[] parameters);
+        string BuildQuery(QueryOperators? queryOperator, params SearchQueryParameters[] parameters);
+        string BuildCustomQuery(QueryOperators? queryOperator, params string[] queries);
     }
 }

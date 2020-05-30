@@ -5,16 +5,17 @@ using System.Runtime.Serialization;
 
 namespace SonicSoft.Azure.Search.Query.Builder.Contracts.PropertyMapper
 {
-    public class PropertyMapper:IPropertyMapper
+    public class PropertyMapper : IPropertyMapper
     {
-        private List<SearchProperty> _propertyMaps;
+        private List<SearchPropertyMap> _propertyMaps;
 
-        public PropertyMapper(List<SearchProperty> properties)
+        public PropertyMapper(IAzureSearchProperties azureSearchProperties)
         {
-            _propertyMaps = properties ??
+            _propertyMaps = azureSearchProperties?.SearchPropertyMaps ??
                             throw new InvalidDataContractException("List of azure search property mapping required");
         }
-        public SearchProperty GetPropertyMapper(string parentProperty, string propertyName)
+
+        public SearchPropertyMap GetSearchPropertyMap(string parentProperty, string propertyName)
         {
             return _propertyMaps.SingleOrDefault(s =>
                 string.Equals(s.ParentPropertyName, parentProperty, StringComparison.CurrentCultureIgnoreCase) &&

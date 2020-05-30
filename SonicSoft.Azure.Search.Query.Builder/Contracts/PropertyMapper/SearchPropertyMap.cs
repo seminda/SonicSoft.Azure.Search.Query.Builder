@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SonicSoft.Azure.Search.Query.Builder.Contracts.PropertyMapper
 {
-    public class SearchProperty
+    public class SearchPropertyMap
     {
         public string ParentPropertyName { get; set; }
         public string PropertyName { get; set; }
-        public List<string> AzureSearchPropertyMaps { get; set; }
+        public bool IsArray { get; set; }
+        public string AzureSearchPropertyMap { get; set; }
     }
 }
