@@ -24,3 +24,15 @@ Rooms/any(x: x/Type ne 'Standard Room' and x/BaseRate ge 100 and x/BaseRate le 2
 Rooms/any(x: x/Type ne 'Standard Room' and x/BaseRate ge 100 and search.in(x/Tags, 'jacuzzi tub|bathroom shower','|'))
 ((Rooms/any(x: x/Type ne 'Standard Room' and x/BaseRate ge 100 and search.in(x/Tags, 'jacuzzi tub|bathroom shower','|')) and search.in(Tags, 'view|laundry service', '|')) or Address/Country eq 'USA')
 ```
+## Installation
+
+
+## Usage
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[SonicSoft License](https://github.com/seminda/SonicSoft.Azure.Search.Query.Builder/blob/feature/readme/LICENSE)
