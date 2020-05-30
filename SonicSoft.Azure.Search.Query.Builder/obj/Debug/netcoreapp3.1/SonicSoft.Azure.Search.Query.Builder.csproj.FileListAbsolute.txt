@@ -1,8 +1,0 @@
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\bin\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.deps.json
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\bin\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.dll
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\bin\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.pdb
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\obj\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.csproj.CoreCompileInputs.cache
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\obj\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.AssemblyInfoInputs.cache
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\obj\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.AssemblyInfo.cs
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\obj\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.dll
-C:\AGL\SourceCode\Seminda\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\obj\Debug\netcoreapp3.1\SonicSoft.Azure.Search.Query.Builder.pdb
