@@ -12,7 +12,7 @@ using System;
 using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("SonicSoft.Azure.Search.Query.Builder")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("SonicSoft azure search query builder design and develop to support any c# project" +
     " that required to create filter queries for retrieve data from Azure Cognitive S" +
     "earch index.")]

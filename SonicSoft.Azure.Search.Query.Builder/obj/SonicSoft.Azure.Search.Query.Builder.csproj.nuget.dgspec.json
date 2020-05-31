@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\AGL\\SourceCode\\Seminda\\SonicSoft.Azure.Search.Query.Builder\\SonicSoft.Azure.Search.Query.Builder\\SonicSoft.Azure.Search.Query.Builder.csproj": {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "restore": {
         "projectUniqueName": "C:\\AGL\\SourceCode\\Seminda\\SonicSoft.Azure.Search.Query.Builder\\SonicSoft.Azure.Search.Query.Builder\\SonicSoft.Azure.Search.Query.Builder.csproj",
         "projectName": "SonicSoft.Azure.Search.Query.Builder",
