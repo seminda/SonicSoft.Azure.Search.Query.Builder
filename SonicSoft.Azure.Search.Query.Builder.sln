@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DD0DE216-F438-4B51-8F20-D2ECA85CCCC4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonicSoft.Azure.Search.Query.Builder", "SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder.csproj", "{DF56DC74-D711-4606-80E9-22E690DEE869}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonicSoft.Azure.Search.Query.Builder", "SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder.csproj", "{F90523C4-31E3-4388-A2AD-2C952E658711}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonicSoft.Azure.Search.Query.Builder.Tests", "SonicSoft.Azure.Search.Query.Builder\SonicSoft.Azure.Search.Query.Builder.Tests\SonicSoft.Azure.Search.Query.Builder.Tests.csproj", "{B50232D0-A512-4616-8718-F9C25740C47C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonicSoft.Azure.Search.Query.Builder.Tests", "SonicSoft.Azure.Search.Query.Builder.Tests\SonicSoft.Azure.Search.Query.Builder.Tests.csproj", "{76FCD21E-716A-4351-AA3A-F3D77AF641FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,17 +15,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DF56DC74-D711-4606-80E9-22E690DEE869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF56DC74-D711-4606-80E9-22E690DEE869}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF56DC74-D711-4606-80E9-22E690DEE869}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF56DC74-D711-4606-80E9-22E690DEE869}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B50232D0-A512-4616-8718-F9C25740C47C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B50232D0-A512-4616-8718-F9C25740C47C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B50232D0-A512-4616-8718-F9C25740C47C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B50232D0-A512-4616-8718-F9C25740C47C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F90523C4-31E3-4388-A2AD-2C952E658711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F90523C4-31E3-4388-A2AD-2C952E658711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F90523C4-31E3-4388-A2AD-2C952E658711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F90523C4-31E3-4388-A2AD-2C952E658711}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76FCD21E-716A-4351-AA3A-F3D77AF641FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76FCD21E-716A-4351-AA3A-F3D77AF641FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76FCD21E-716A-4351-AA3A-F3D77AF641FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76FCD21E-716A-4351-AA3A-F3D77AF641FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{76FCD21E-716A-4351-AA3A-F3D77AF641FC} = {DD0DE216-F438-4B51-8F20-D2ECA85CCCC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A684CFF5-5F8C-4FA9-ADC8-B9A157810241}
