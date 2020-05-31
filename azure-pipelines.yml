@@ -13,7 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  MyRunNumber: '1.0.$(DayOfYear).$(Rev:.r)'
+  MyRunNumber: 1.0.$(DayOfYear).$(Rev:r)
 
 steps:
 - task: NuGetToolInstaller@1
