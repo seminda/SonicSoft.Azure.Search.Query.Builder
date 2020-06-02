@@ -35,7 +35,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '**\*.csproj;!**\*.Tests.csproj'
+    packagesToPack: '**\*.csproj;!**\*.Tests.csproj;!**\*.Example.*.csproj'
     versioningScheme: 'off'
 
 - task: PublishBuildArtifacts@1
