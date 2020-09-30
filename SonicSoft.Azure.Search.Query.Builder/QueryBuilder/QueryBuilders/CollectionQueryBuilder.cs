@@ -105,6 +105,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
                 string searchValue;
                 var isAdditionalNullCheckRequired = false;
                 var isString = additionalSearchFilterInfo.Value is string;
+                var isDateTime = additionalSearchFilterInfo.Value is DateTime;
 
                 if (isString && string.IsNullOrWhiteSpace(additionalSearchFilterInfo.Value.ToString()))
                     return string.Empty;
@@ -112,6 +113,10 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
                 if (additionalSearchFilterInfo.IsNullCheck && additionalSearchFilterInfo.Value == null)
                 {
                     searchValue = "null";
+                }
+                else if (isDateTime)
+                {
+                    searchValue = ((DateTime)additionalSearchFilterInfo.Value).ToString(_searchConfiguration.DateFormat);
                 }
                 else
                 {
