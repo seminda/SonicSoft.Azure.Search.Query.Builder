@@ -2,7 +2,7 @@
 
 namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 {
-    internal interface IQueryBuilder
+    public interface IQueryBuilder
     {
         bool IsMatch(SearchQueryParameter searchQueryParameter);
         string BuildQuery(SearchQueryParameter searchQueryParameter);

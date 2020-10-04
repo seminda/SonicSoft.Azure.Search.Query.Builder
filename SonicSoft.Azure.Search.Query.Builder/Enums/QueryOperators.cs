@@ -1,6 +1,6 @@
 ﻿namespace SonicSoft.Azure.Search.Query.Builder.Enums
 {
-    public enum QueryOperators
+    public enum QueryConditions
     {
         And,
         Or

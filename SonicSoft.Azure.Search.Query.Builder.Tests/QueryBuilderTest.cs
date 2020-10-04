@@ -5,6 +5,7 @@ using SonicSoft.Azure.Search.Query.Builder.Contracts;
 using SonicSoft.Azure.Search.Query.Builder.Contracts.Configs;
 using SonicSoft.Azure.Search.Query.Builder.Contracts.PropertyMapper;
 using SonicSoft.Azure.Search.Query.Builder.Enums;
+using SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders;
 using Xunit;
 
 namespace SonicSoft.Azure.Search.Query.Builder.Tests
@@ -18,8 +19,12 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
             var propertyMaps = new TestAzureSearchProperties();
             var searchConfig = new SearchConfiguration("yyyy-MM-dd", "|");
             var mapper = new PropertyMapper(propertyMaps);
-
-            _queryBuilder = new SearchQueryBuilder(mapper, searchConfig);
+            var queryBuilders = new List<IQueryBuilder>
+            {
+                new StandardQueryBuilder(mapper, searchConfig),
+                new CollectionQueryBuilder(mapper, searchConfig)
+            };
+            _queryBuilder = new SearchQueryBuilder(queryBuilders);
         }
 
         [Theory]
@@ -49,9 +54,9 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
         }
 
         [Theory]
-        [InlineData(QueryOperators.Or, "(HotelName eq 'Double Sanctuary Resort' or Category eq 'Resort and Spa')")]
-        [InlineData(QueryOperators.And, "(HotelName eq 'Double Sanctuary Resort' and Category eq 'Resort and Spa')")]
-        public void QueryBuilder_BuildQuery_Combine_filter(QueryOperators queryOperator, string expectedQuery)
+        [InlineData(QueryConditions.Or, "(HotelName eq 'Double Sanctuary Resort' or Category eq 'Resort and Spa')")]
+        [InlineData(QueryConditions.And, "(HotelName eq 'Double Sanctuary Resort' and Category eq 'Resort and Spa')")]
+        public void QueryBuilder_BuildQuery_Combine_filter(QueryConditions queryOperator, string expectedQuery)
         {
             var searchOptions = new List<SearchQueryParameter>
             {
@@ -139,8 +144,9 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                     Parent = TestAzureSearchProperties.Rooms,
                     Name = TestAzureSearchProperties.Rooms,
                     Value = "",
+                    Type = DataType.String,
                     ODataOperator = ODataOperators.Any,
-                    SubQueryParameterQueryOperators = QueryOperators.And,
+                    SubQueryParameterQueryCondition =  QueryConditions.And,
                     SubQueryParameters = new List<SearchSubQueryParameter>
                     {
                         new SearchSubQueryParameter
@@ -148,6 +154,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.RoomType,
                             Value = "Standard Room",
+                            Type = DataType.String,
                             ODataOperator = ODataOperators.Ne
                         },
                         new SearchSubQueryParameter
@@ -155,6 +162,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.RoomBaseRate,
                             Value = 100,
+                            Type = DataType.Number,
                             ODataOperator = ODataOperators.Ge
                         },
                         new SearchSubQueryParameter
@@ -162,6 +170,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.RoomBaseRate,
                             Value = 200,
+                            Type = DataType.Number,
                             ODataOperator = ODataOperators.Le
                         }
                     }
@@ -169,7 +178,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
             };
 
             var actualQuery =
-                _queryBuilder.BuildQuery(null, new SearchQueryParameters(searchOptions, QueryOperators.And));
+                _queryBuilder.BuildQuery(null, new SearchQueryParameters(searchOptions, QueryConditions.And));
 
             actualQuery.Should().Be(expectedFilter);
         }
@@ -186,8 +195,9 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                     Parent = TestAzureSearchProperties.Rooms,
                     Name = TestAzureSearchProperties.Rooms,
                     Value = "",
+                    Type = DataType.String,
                     ODataOperator = ODataOperators.Any,
-                    SubQueryParameterQueryOperators = QueryOperators.And,
+                    SubQueryParameterQueryCondition = QueryConditions.And,
                     SubQueryParameters = new List<SearchSubQueryParameter>
                     {
                         new SearchSubQueryParameter
@@ -195,6 +205,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.RoomType,
                             Value = "Standard Room",
+                            Type = DataType.String,
                             ODataOperator = ODataOperators.Ne
                         },
                         new SearchSubQueryParameter
@@ -202,6 +213,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.RoomBaseRate,
                             Value = 100,
+                            Type = DataType.Number,
                             ODataOperator = ODataOperators.Ge
                         },
                         new SearchSubQueryParameter
@@ -209,6 +221,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.Tags,
                             Value = "jacuzzi tub|bathroom shower",
+                            Type = DataType.String,
                             ODataOperator = ODataOperators.SearchIn
                         }
                     }
@@ -216,7 +229,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
             };
 
             var actualQuery =
-                _queryBuilder.BuildQuery(null, new SearchQueryParameters(searchOptions, QueryOperators.And));
+                _queryBuilder.BuildQuery(null, new SearchQueryParameters(searchOptions, QueryConditions.And));
 
             actualQuery.Should().Be(expectedFilter);
         }
@@ -234,8 +247,9 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                     Parent = TestAzureSearchProperties.Rooms,
                     Name = TestAzureSearchProperties.Rooms,
                     Value = "",
+                    Type = DataType.String,
                     ODataOperator = ODataOperators.Any,
-                    SubQueryParameterQueryOperators = QueryOperators.And,
+                    SubQueryParameterQueryCondition = QueryConditions.And,
                     SubQueryParameters = new List<SearchSubQueryParameter>
                     {
                         new SearchSubQueryParameter
@@ -243,6 +257,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.RoomType,
                             Value = "Standard Room",
+                            Type = DataType.String,
                             ODataOperator = ODataOperators.Ne
                         },
                         new SearchSubQueryParameter
@@ -250,6 +265,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.RoomBaseRate,
                             Value = 100,
+                            Type = DataType.Number,
                             ODataOperator = ODataOperators.Ge
                         },
                         new SearchSubQueryParameter
@@ -257,6 +273,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                             AdditionalFilterParent = TestAzureSearchProperties.Rooms,
                             AdditionalFilterName = TestAzureSearchProperties.Tags,
                             Value = "jacuzzi tub|bathroom shower",
+                            Type = DataType.String,
                             ODataOperator = ODataOperators.SearchIn
                         }
                     }
@@ -266,6 +283,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                     Parent = TestAzureSearchProperties.Tags,
                     Name = TestAzureSearchProperties.Tags,
                     Value = "view|laundry service",
+                    Type = DataType.String,
                     ODataOperator = ODataOperators.SearchIn
                 }
             };
@@ -282,7 +300,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
             });
 
             var actualQuery =
-                _queryBuilder.BuildQuery(QueryOperators.Or, new SearchQueryParameters(searchOptions, QueryOperators.And), countryQuery);
+                _queryBuilder.BuildQuery(QueryConditions.Or, new SearchQueryParameters(searchOptions, QueryConditions.And), countryQuery);
 
             actualQuery.Should().Be(expectedFilter);
         }

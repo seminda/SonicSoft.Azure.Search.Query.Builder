@@ -5,7 +5,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Contracts
 {
     public class SearchQueryParameters
     {
-        public SearchQueryParameters(List<SearchQueryParameter> filters, QueryOperators? queryOperator = null, string customQuery = "")
+        public SearchQueryParameters(List<SearchQueryParameter> filters, QueryConditions? queryOperator = null, string customQuery = "")
         {
             Filters = filters;
             QueryOperator = queryOperator;
@@ -13,7 +13,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Contracts
         }
 
         public List<SearchQueryParameter> Filters { get; set; }
-        public QueryOperators? QueryOperator { get; set; }
+        public QueryConditions? QueryOperator { get; set; }
 
         public string CustomQuery { get; set; }
     }

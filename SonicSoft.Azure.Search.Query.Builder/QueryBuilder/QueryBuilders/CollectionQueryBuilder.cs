@@ -9,13 +9,13 @@ using SonicSoft.Azure.Search.Query.Builder.Enums;
 
 namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 {
-    internal class CollectionQueryBuilder : QueryBuilder
+    public class CollectionQueryBuilder : QueryBuilder
     {
         private readonly IPropertyMapper _filterMapper;
         private readonly ISearchConfiguration _searchConfiguration;
         private readonly string _itemName = "x";
 
-        internal CollectionQueryBuilder(IPropertyMapper filterMapper, ISearchConfiguration searchConfiguration)
+        public CollectionQueryBuilder(IPropertyMapper filterMapper, ISearchConfiguration searchConfiguration)
         {
             _filterMapper = filterMapper;
             _searchConfiguration = searchConfiguration;
@@ -69,7 +69,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 
             queryList.Add(builder.ToString());
 
-            return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
+            return BuildCustomQuery(QueryConditions.Or, queryList.ToArray());
         }
 
         private string BuildSubQuery(SearchQueryParameter searchQueryParameter)
@@ -85,7 +85,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 
             }
 
-            return BuildCustomQuery(searchQueryParameter.SubQueryParameterQueryOperators, subQueryList.ToArray());
+            return BuildCustomQuery(searchQueryParameter.SubQueryParameterQueryCondition, subQueryList.ToArray());
         }
 
         private string GetAdditionalFilter(SearchPropertyMap propertyMap,
@@ -139,10 +139,10 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
                 }
             }
 
-            return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
+            return BuildCustomQuery(QueryConditions.Or, queryList.ToArray());
         }
 
-        protected string BuildCustomQuery(QueryOperators? queryOperator, params string[] queries)
+        protected string BuildCustomQuery(QueryConditions? queryOperator, params string[] queries)
         {
             var value =
                 $"{string.Join($" {queryOperator?.ToString().ToLower()} ", queries.Where(s => !string.IsNullOrWhiteSpace(s)))}";
@@ -170,7 +170,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
                 $"search.in({azureSearchPropertyMap}, '{values}', '{_searchConfiguration.Delimiter}')"
             };
 
-            return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
+            return BuildCustomQuery(QueryConditions.Or, queryList.ToArray());
         }
     }
 }
