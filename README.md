@@ -26,7 +26,7 @@ Rooms/any(x: x/Type ne 'Standard Room' and x/BaseRate ge 100 and search.in(x/Tag
 ```
 ## Installation
 ```bash
-dotnet add package SonicSoft.Azure.Search.Query.Builder --version 1.0.0
+dotnet add package SonicSoft.Azure.Search.Query.Builder --version 2.0.0
 ```
 ## Full Documentation
 [Full Documentation](https://github.com/seminda/SonicSoft.Azure.Search.Query.Builder/wiki)
