@@ -44,7 +44,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Example.CreateQuery.AzureIndexSea
                 ParentPropertyName = parent,
                 PropertyName = property,
                 AzureSearchPropertyMap = azureSearchPropertyMap,
-                IsArray = isArray
+                IsCollection = isArray
             };
         }
     }
