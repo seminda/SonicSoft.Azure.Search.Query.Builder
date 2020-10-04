@@ -15,6 +15,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
         public const string Rooms = "Rooms";
         public const string RoomType = "Type";
         public const string RoomBaseRate = "BaseRate";
+        public const string LastRenovationDate = "LastRenovationDate";
 
         public TestAzureSearchProperties()
         {
@@ -30,7 +31,8 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                 CreateSearchPropertyMap(Rooms, Rooms, Rooms, true),
                 CreateSearchPropertyMap(Rooms, RoomType, $"{RoomType}"),
                 CreateSearchPropertyMap(Rooms, RoomBaseRate, $"{RoomBaseRate}"),
-                CreateSearchPropertyMap(Rooms, Tags, $"{Tags}", true)
+                CreateSearchPropertyMap(Rooms, Tags, $"{Tags}", true),
+                CreateSearchPropertyMap(LastRenovationDate, LastRenovationDate, LastRenovationDate)
             };
         }
 
@@ -44,7 +46,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                 ParentPropertyName = parent,
                 PropertyName = property,
                 AzureSearchPropertyMap = azureSearchPropertyMap,
-                IsArray = isArray
+                IsCollection = isArray
             };
         }
     }

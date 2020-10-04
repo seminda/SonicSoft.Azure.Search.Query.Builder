@@ -1,13 +1,11 @@
 ﻿using SonicSoft.Azure.Search.Query.Builder.Enums;
 
-namespace SonicSoft.Azure.Search.Query.Builder.Contracts
+namespace SonicSoft.Azure.Search.Query.Builder.Contracts.QueryParameter
 {
-    public class SearchSubQueryParameter
+    public class SearchSubQueryParameter:SearchQueryParameterBase
     {
         public string AdditionalFilterParent { get; set; }
         public string AdditionalFilterName { get; set; }
-        public object Value { get; set; }
-        public bool IsNullCheck { get; set; }
         public ODataOperators ODataOperator { get; set; }
     }
 }

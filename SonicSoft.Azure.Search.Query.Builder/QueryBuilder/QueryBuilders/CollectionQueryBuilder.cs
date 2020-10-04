@@ -1,35 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SonicSoft.Azure.Search.Query.Builder.Contracts;
 using SonicSoft.Azure.Search.Query.Builder.Contracts.Configs;
 using SonicSoft.Azure.Search.Query.Builder.Contracts.PropertyMapper;
+using SonicSoft.Azure.Search.Query.Builder.Contracts.QueryParameter;
+using SonicSoft.Azure.Search.Query.Builder.DataFormat;
 using SonicSoft.Azure.Search.Query.Builder.Enums;
 
 namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 {
-    internal class CollectionQueryBuilder : QueryBuilder
+    public class CollectionQueryBuilder : IQueryBuilder
     {
         private readonly IPropertyMapper _filterMapper;
         private readonly ISearchConfiguration _searchConfiguration;
+        private readonly IEnumerable<IDataFormat> _dataFormats;
+
         private readonly string _itemName = "x";
 
-        internal CollectionQueryBuilder(IPropertyMapper filterMapper, ISearchConfiguration searchConfiguration)
+        public CollectionQueryBuilder(IPropertyMapper filterMapper, ISearchConfiguration searchConfiguration, IEnumerable<IDataFormat> dataFormats)
         {
             _filterMapper = filterMapper;
             _searchConfiguration = searchConfiguration;
+            _dataFormats = dataFormats;
         }
 
-        public override bool IsMatch(SearchQueryParameter searchQueryParameter)
+        public bool IsMatch(SearchQueryParameter searchQueryParameter)
         {
             var searchProperty =
                 _filterMapper.GetSearchPropertyMap(searchQueryParameter.Parent, searchQueryParameter.Name);
 
-            return searchProperty.IsArray;
+            return searchProperty.IsCollection;
         }
 
-        public override string BuildQuery(SearchQueryParameter searchQueryParameter)
+        public string BuildQuery(SearchQueryParameter searchQueryParameter)
         {
             var searchProperty =
                 _filterMapper.GetSearchPropertyMap(searchQueryParameter.Parent, searchQueryParameter.Name);
@@ -69,7 +72,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 
             queryList.Add(builder.ToString());
 
-            return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
+            return BuildCustomQuery(QueryConditions.Or, queryList.ToArray());
         }
 
         private string BuildSubQuery(SearchQueryParameter searchQueryParameter)
@@ -85,7 +88,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
 
             }
 
-            return BuildCustomQuery(searchQueryParameter.SubQueryParameterQueryOperators, subQueryList.ToArray());
+            return BuildCustomQuery(searchQueryParameter.SubQueryParameterQueryCondition, subQueryList.ToArray());
         }
 
         private string GetAdditionalFilter(SearchPropertyMap propertyMap,
@@ -102,47 +105,25 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
             }
             else
             {
-                string searchValue;
-                var isAdditionalNullCheckRequired = false;
-                var isString = additionalSearchFilterInfo.Value is string;
-                var isDateTime = additionalSearchFilterInfo.Value is DateTime;
+                var data = _dataFormats.First(s => s.IsMatch(additionalSearchFilterInfo)).GetFormattedValue(additionalSearchFilterInfo);
 
-                if (isString && string.IsNullOrWhiteSpace(additionalSearchFilterInfo.Value.ToString()))
+                if (string.IsNullOrWhiteSpace(data.Value))
                     return string.Empty;
-
-                if (additionalSearchFilterInfo.IsNullCheck && additionalSearchFilterInfo.Value == null)
-                {
-                    searchValue = "null";
-                }
-                else if (isDateTime)
-                {
-                    searchValue = ((DateTime)additionalSearchFilterInfo.Value).ToString(_searchConfiguration.DateFormat);
-                }
-                else
-                {
-                    searchValue = isString
-                        ? $"'{additionalSearchFilterInfo.Value}'"
-                        : $"{additionalSearchFilterInfo.Value.ToString().ToLower()}";
-                    if (additionalSearchFilterInfo.IsNullCheck)
-                    {
-                        isAdditionalNullCheckRequired = true;
-                    }
-                }
-
+                
                 queryList.Add(
-                    $"{_itemName}/{propertyMap.AzureSearchPropertyMap} {additionalSearchFilterInfo.ODataOperator.ToString().ToLower()} {searchValue}");
+                    $"{_itemName}/{propertyMap.AzureSearchPropertyMap} {additionalSearchFilterInfo.ODataOperator.ToString().ToLower()} {data.Value}");
 
-                if (isAdditionalNullCheckRequired)
+                if (data.IsAdditionalNullCheckRequired)
                 {
                     queryList.Add(
                         $"{_itemName}/{propertyMap.AzureSearchPropertyMap} {additionalSearchFilterInfo.ODataOperator.ToString().ToLower()} null");
                 }
             }
 
-            return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
+            return BuildCustomQuery(QueryConditions.Or, queryList.ToArray());
         }
 
-        protected string BuildCustomQuery(QueryOperators? queryOperator, params string[] queries)
+        protected string BuildCustomQuery(QueryConditions? queryOperator, params string[] queries)
         {
             var value =
                 $"{string.Join($" {queryOperator?.ToString().ToLower()} ", queries.Where(s => !string.IsNullOrWhiteSpace(s)))}";
@@ -170,7 +151,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders
                 $"search.in({azureSearchPropertyMap}, '{values}', '{_searchConfiguration.Delimiter}')"
             };
 
-            return BuildCustomQuery(QueryOperators.Or, queryList.ToArray());
+            return BuildCustomQuery(QueryConditions.Or, queryList.ToArray());
         }
     }
 }

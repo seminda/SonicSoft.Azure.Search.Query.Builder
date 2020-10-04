@@ -5,7 +5,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.QueryBuilder
 {
     public interface ISearchQueryBuilder
     {
-        string BuildQuery(QueryOperators? queryOperator, params SearchQueryParameters[] parameters);
-        string BuildCustomQuery(QueryOperators? queryOperator, params string[] queries);
+        string BuildQuery(QueryConditions? queryOperator, params SearchQueryParameters[] parameters);
+        string BuildCustomQuery(QueryConditions? queryOperator, params string[] queries);
     }
 }
