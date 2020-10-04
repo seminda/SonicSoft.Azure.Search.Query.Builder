@@ -5,6 +5,8 @@ using FluentAssertions;
 using SonicSoft.Azure.Search.Query.Builder.Contracts;
 using SonicSoft.Azure.Search.Query.Builder.Contracts.Configs;
 using SonicSoft.Azure.Search.Query.Builder.Contracts.PropertyMapper;
+using SonicSoft.Azure.Search.Query.Builder.Contracts.QueryParameter;
+using SonicSoft.Azure.Search.Query.Builder.DataFormat;
 using SonicSoft.Azure.Search.Query.Builder.Enums;
 using SonicSoft.Azure.Search.Query.Builder.QueryBuilder.QueryBuilders;
 using Xunit;
@@ -20,11 +22,20 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
             var propertyMaps = new TestAzureSearchProperties();
             var searchConfig = new SearchConfiguration("yyyy-MM-dd", "|");
             var mapper = new PropertyMapper(propertyMaps);
+            var dataFormats = new List<IDataFormat>()
+            {
+                new DateTimeFormat(searchConfig),
+                new NullDataFormat(),
+                new NumberFormat(),
+                new StringDataFormat()
+            };
+
             var queryBuilders = new List<IQueryBuilder>
             {
-                new StandardQueryBuilder(mapper, searchConfig),
-                new CollectionQueryBuilder(mapper, searchConfig)
+                new StandardQueryBuilder(mapper, searchConfig, dataFormats),
+                new CollectionQueryBuilder(mapper, searchConfig, dataFormats)
             };
+
             _queryBuilder = new SearchQueryBuilder(queryBuilders);
         }
 

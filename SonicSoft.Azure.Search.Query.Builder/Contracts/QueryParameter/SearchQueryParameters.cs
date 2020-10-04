@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SonicSoft.Azure.Search.Query.Builder.Contracts.QueryParameter;
 using SonicSoft.Azure.Search.Query.Builder.Enums;
 
 namespace SonicSoft.Azure.Search.Query.Builder.Contracts

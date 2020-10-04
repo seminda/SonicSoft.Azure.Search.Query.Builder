@@ -46,7 +46,7 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                 ParentPropertyName = parent,
                 PropertyName = property,
                 AzureSearchPropertyMap = azureSearchPropertyMap,
-                IsArray = isArray
+                IsCollection = isArray
             };
         }
     }
