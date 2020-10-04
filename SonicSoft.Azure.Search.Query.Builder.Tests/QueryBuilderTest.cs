@@ -1,4 +1,5 @@
-﻿using SonicSoft.Azure.Search.Query.Builder.QueryBuilder;
+﻿using System;
+using SonicSoft.Azure.Search.Query.Builder.QueryBuilder;
 using System.Collections.Generic;
 using FluentAssertions;
 using SonicSoft.Azure.Search.Query.Builder.Contracts;
@@ -303,6 +304,74 @@ namespace SonicSoft.Azure.Search.Query.Builder.Tests
                 _queryBuilder.BuildQuery(QueryConditions.Or, new SearchQueryParameters(searchOptions, QueryConditions.And), countryQuery);
 
             actualQuery.Should().Be(expectedFilter);
+        }
+
+        [Fact]
+        public void QueryBuilder_BuildQuery_DateTime()
+        {
+            var expectedFilter = "LastRenovationDate ge 1981-04-12";
+
+            var searchOptions = new List<SearchQueryParameter>
+            {
+                new SearchQueryParameter()
+                {
+                    Name = TestAzureSearchProperties.LastRenovationDate,
+                    Value = new DateTime(1981,04,12),
+                    Type = DataType.DateTime,
+                    Parent = TestAzureSearchProperties.LastRenovationDate,
+                    ODataOperator = ODataOperators.Ge
+                }
+            };
+
+            var searchParameters = new List<SearchQueryParameters>()
+            {
+                new SearchQueryParameters(searchOptions)
+            };
+
+            var actualQuery = _queryBuilder.BuildQuery(null, searchParameters.ToArray());
+
+            actualQuery.Should().Be(expectedFilter);
+           
+        }
+
+        [Fact]
+        public void QueryBuilder_BuildQuery_DateTime_Between()
+        {
+            var expectedFilter = "(LastRenovationDate ge 1981-04-12 and LastRenovationDate le 2000-12-12)";
+
+            var searchOptions = new List<SearchQueryParameter>
+            {
+                new SearchQueryParameter()
+                {
+                    Name = TestAzureSearchProperties.LastRenovationDate,
+                    Value = new DateTime(1981, 04, 12),
+                    Type = DataType.DateTime,
+                    Parent = TestAzureSearchProperties.LastRenovationDate,
+                    ODataOperator = ODataOperators.Ge,
+                    SubQueryParameterQueryCondition = QueryConditions.And,
+                    SubQueryParameters = new List<SearchSubQueryParameter>()
+                    {
+                        new SearchSubQueryParameter()
+                        {
+                            AdditionalFilterParent = TestAzureSearchProperties.LastRenovationDate,
+                            AdditionalFilterName = TestAzureSearchProperties.LastRenovationDate,
+                            Value = new DateTime(2000, 12, 12),
+                            Type = DataType.DateTime,
+                            ODataOperator = ODataOperators.Le
+                        }
+                    }
+                }
+            };
+
+            var searchParameters = new List<SearchQueryParameters>()
+            {
+                new SearchQueryParameters(searchOptions)
+            };
+
+            var actualQuery = _queryBuilder.BuildQuery(null, searchParameters.ToArray());
+
+            actualQuery.Should().Be(expectedFilter);
+
         }
     }
 }
